@@ -1,5 +1,6 @@
 -- Look at all data
-SELECT * FROM spotify;
+SELECT * FROM spotify
+ORDER BY year;
 
 -- Look at most popular song in this dataset
 SELECT * FROM spotify
@@ -10,14 +11,26 @@ WHERE popularity = (
 -- Try to get most popular artists for the last decade
 SELECT artist, title, popularity, year
 FROM spotify
-WHERE popularity > 50 AND year > 2009;
+WHERE popularity > 50 AND year > 2009
+ORDER BY popularity DESC;
 
--- Top 5 popular songs by decade
-SELECT artist, title, popularity, year
+-- Popular songs for 2010-2019
+SELECT title, artist, popularity, year
 FROM spotify
-WHERE year = 2000 AND popularity > 80
-ORDER BY popularity DESC
-LIMIT 5;
+WHERE CAST(year AS TEXT) LIKE '201%' AND popularity > 70
+ORDER BY popularity DESC;
+
+-- Popular songs for 2000s
+SELECT title, artist, popularity, year
+FROM spotify
+WHERE CAST(year AS TEXT) LIKE '200%' AND popularity > 70
+ORDER BY popularity DESC;
+
+-- Popular songs from 1950s-1999
+SELECT title, artist, popularity, year
+FROM spotify
+WHERE CAST(year AS TEXT) LIKE '19%' AND popularity > 70
+ORDER BY popularity DESC;
 
 -- Creating table of top songs with popularity greater than 80
 CREATE TABLE top_songs AS
@@ -63,10 +76,11 @@ ORDER BY popular_songs DESC
 LIMIT 10;
 
 -- Popular spoken word songs
-SELECT artist, title, speechiness, popularity
+SELECT artist, title, MAX(speechiness), popularity
 FROM spotify
 WHERE popularity > 60
-ORDER BY popularity DESC
+GROUP BY artist, title, speechiness, popularity
+ORDER BY speechiness DESC
 LIMIT 10;
 
 -- Average tempo of songs as years progress
@@ -88,7 +102,7 @@ GROUP BY artist
 ORDER BY artist_popularity DESC
 LIMIT 10;
 
--- Loudest song in this dataset
+-- Loudest songs in this dataset
 SELECT title, MAX(loudness) AS loudness
 FROM spotify
 GROUP BY title
@@ -99,7 +113,7 @@ LIMIT 10;
 SELECT title, MIN(loudness) AS quietness
 FROM spotify
 GROUP BY title
-ORDER BY loudness
+ORDER BY quietness
 LIMIT 10;
 
 -- Artists with the loudest songs
